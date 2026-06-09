@@ -1,0 +1,90 @@
+/* Atoms — smallest reusable pieces */
+
+/* width-locked slot label (JS sets min-width to widest state) */
+.lockable {
+  display: inline-flex;
+  justify-content: center;
+}
+
+/* compact white control button */
+.demo-btn {
+  appearance: none;
+  border: 0;
+  font-family: inherit;
+  font-weight: 560;
+  font-size: 12.5px;
+  line-height: 1;
+  letter-spacing: var(--tracking);
+  color: var(--ink);
+  background: #fff;
+  padding: 5px 9px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-control);
+  transition: transform 120ms ease;
+}
+.demo-btn:active { transform: scale(0.96); }
+
+/* status dot */
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+  transition: background 300ms ease, box-shadow 300ms ease;
+  flex: none;
+}
+.busy .dot {
+  background: var(--amber);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+}
+
+/* tabular counter */
+.counter {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.counter .unit {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-3);
+  margin-left: 5px;
+}
+
+/* cross-fading icon pair (copy → check) */
+.copy-icon {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  flex: none;
+  color: var(--ink-3);
+}
+.copy-icon svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 300ms var(--ease-out),
+    filter 300ms var(--ease-out);
+}
+.copy-icon .icon-check {
+  opacity: 0;
+  transform: scale(0.25);
+  filter: blur(4px);
+  color: var(--green);
+}
+.copied .copy-icon .icon-copy {
+  opacity: 0;
+  transform: scale(0.25);
+  filter: blur(4px);
+}
+.copied .copy-icon .icon-check {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0px);
+}
