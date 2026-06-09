@@ -12,6 +12,8 @@ npm install slot-text
 
 ## Use
 
+### Vanilla
+
 ```ts
 import "slot-text/style.css";
 import { slotText, chromatic } from "slot-text";
@@ -24,7 +26,50 @@ label.set("Copied", {
 });
 ```
 
+### React
+
+```tsx
+import "slot-text/style.css";
+import { SlotText } from "slot-text/react";
+import { chromatic } from "slot-text";
+
+export function CopyLabel({ copied }: { copied: boolean }) {
+  return (
+    <SlotText
+      text={copied ? "Copied" : "Copy"}
+      options={{
+        direction: copied ? "up" : "down",
+        skipUnchanged: false,
+        color: copied ? chromatic() : undefined,
+      }}
+    />
+  );
+}
+```
+
+### Vue
+
+```vue
+<script setup lang="ts">
+import "slot-text/style.css";
+import { SlotText } from "slot-text/vue";
+import { chromatic } from "slot-text";
+
+const options = {
+  direction: "up",
+  skipUnchanged: false,
+  color: chromatic(),
+} as const;
+</script>
+
+<template>
+  <SlotText text="Copied" :options="options" />
+</template>
+```
+
 ## API
+
+Vanilla controller:
 
 ```ts
 const label = slotText(element, "Copy", options);
@@ -34,7 +79,14 @@ label.set("Copy", { direction: "down" });
 label.destroy();
 ```
 
-Low-level helpers are also exported:
+Framework components:
+
+```ts
+import { SlotText as ReactSlotText } from "slot-text/react";
+import { SlotText as VueSlotText } from "slot-text/vue";
+```
+
+Low-level helpers:
 
 ```ts
 import {
@@ -98,6 +150,7 @@ Defaults are tuned for a soft, springy roll:
 ## Notes
 
 - Browser-only DOM utility.
-- No runtime dependencies.
+- Core API has no runtime dependencies.
+- React and Vue are optional peer dependencies. Plain JS users do not need them.
 - Works best on short labels, buttons, counters, and command text.
 - Import the CSS once before using the animation.

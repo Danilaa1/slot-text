@@ -88,10 +88,17 @@ export function animateSlotText(container, toText, options = {}) {
     const fromText = slots.map((s) => s.dataset.char ?? "").join("");
     const maxLen = Math.max(fromText.length, toText.length);
     // Whole-pixel slide distance = one cell height, so glyphs clip cleanly.
+    // If layout has not produced dimensions yet, fall back to line-height/font-size
+    // so the text still rolls instead of swapping in place.
     const sample = slots.find((s) => (s.dataset.char ?? "") !== "") ?? slots[0];
-    const H = Math.round(sample?.offsetHeight || container.offsetHeight || 0);
+    const cs = getComputedStyle(container);
+    const H = Math.round(sample?.getBoundingClientRect().height ||
+        sample?.offsetHeight ||
+        container.getBoundingClientRect().height ||
+        parseFloat(cs.lineHeight) ||
+        0) || Math.round(parseFloat(cs.fontSize) * 1.3) || 18;
     // Resting color to settle the chromatic flash back to.
-    const restColor = color ? getComputedStyle(container).color : "";
+    const restColor = color ? cs.color : "";
     // Pre-create any extra cells up front so the row never reflows mid-roll.
     for (let i = slots.length; i < maxLen; i++) {
         const slot = buildSlot("");

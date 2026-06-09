@@ -21,15 +21,38 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "import": "./dist/vue.js"
+    },
     "./style.css": "./style.css"
   },
   "types": "./dist/index.d.ts",
+  "peerDependencies": {
+    "react": ">=18 <20",
+    "vue": ">=3.4 <4"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.json --noEmit",
     "pack:check": "npm pack --dry-run"
   },
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "@types/react": "^19.2.17",
+    "react": "^19.2.7",
+    "typescript": "^5.8.3",
+    "vue": "^3.5.35"
   }
 }
