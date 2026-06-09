@@ -1,0 +1,32 @@
+<svg width="920" height="520" viewBox="0 0 920 520" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">slot-text usage example</title>
+  <desc id="desc">A visual code card showing how to import and use slot-text.</desc>
+  <rect width="920" height="520" rx="28" fill="#0E1116"/>
+  <rect x="34" y="34" width="852" height="452" rx="18" fill="#151A22" stroke="#2A3342"/>
+  <circle cx="66" cy="66" r="7" fill="#FF6B6B"/>
+  <circle cx="90" cy="66" r="7" fill="#FFD166"/>
+  <circle cx="114" cy="66" r="7" fill="#5CD85C"/>
+  <text x="58" y="118" fill="#7D8A9B" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">npm install slot-text</text>
+  <rect x="58" y="146" width="804" height="272" rx="14" fill="#0B0F14" stroke="#252D3A"/>
+  <text x="86" y="194" fill="#7D8A9B" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">import</text>
+  <text x="159" y="194" fill="#F5D76E" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">"slot-text/style.css"</text>
+  <text x="379" y="194" fill="#B9C4D0" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">;</text>
+  <text x="86" y="232" fill="#7D8A9B" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">import</text>
+  <text x="159" y="232" fill="#B9C4D0" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18"> { slotText, chromatic } </text>
+  <text x="437" y="232" fill="#7D8A9B" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">from</text>
+  <text x="492" y="232" fill="#F5D76E" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18"> "slot-text"</text>
+  <text x="625" y="232" fill="#B9C4D0" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">;</text>
+  <text x="86" y="294" fill="#7D8A9B" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">const</text>
+  <text x="148" y="294" fill="#8ED3FF" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18"> label</text>
+  <text x="225" y="294" fill="#B9C4D0" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18"> = slotText(copyEl, </text>
+  <text x="431" y="294" fill="#F5D76E" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">"Copy"</text>
+  <text x="499" y="294" fill="#B9C4D0" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">);</text>
+  <text x="86" y="356" fill="#8ED3FF" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">label</text>
+  <text x="142" y="356" fill="#B9C4D0" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">.set(</text>
+  <text x="203" y="356" fill="#F5D76E" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">"Copied"</text>
+  <text x="289" y="356" fill="#B9C4D0" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">, { direction: </text>
+  <text x="467" y="356" fill="#F5D76E" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">"up"</text>
+  <text x="516" y="356" fill="#B9C4D0" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">, color: chromatic() });</text>
+  <rect x="58" y="438" width="160" height="34" rx="17" fill="#EAF2FF"/>
+  <text x="82" y="461" fill="#0E1116" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="700">Copy → Copied</text>
+</svg>

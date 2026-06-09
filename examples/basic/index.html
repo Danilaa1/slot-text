@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>slot-text example</title>
+    <link rel="stylesheet" href="../../style.css" />
+    <style>
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        font: 600 18px/1.2 ui-sans-serif, system-ui, sans-serif;
+        background: #0e1116;
+        color: #edf2f7;
+      }
+
+      button {
+        border: 1px solid #2a3342;
+        border-radius: 10px;
+        padding: 12px 18px;
+        background: #151a22;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <button type="button"><span id="copy-label"></span></button>
+
+    <script type="module">
+      import { slotText, chromatic } from "../../dist/index.js";
+
+      const button = document.querySelector("button");
+      const label = slotText(document.querySelector("#copy-label"), "Copy");
+
+      button.addEventListener("click", () => {
+        label.set("Copied", {
+          direction: "up",
+          skipUnchanged: false,
+          color: chromatic({ from: 190 }),
+        });
+
+        window.setTimeout(() => {
+          label.set("Copy", { direction: "down", skipUnchanged: false });
+        }, 1400);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "name": "slot-text",
+  "version": "0.1.0",
+  "description": "Dependency-free text roll animation for tiny, tactile UI labels.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Daniel Belyi",
+  "sideEffects": [
+    "./style.css"
+  ],
+  "files": [
+    "assets",
+    "dist",
+    "examples",
+    "style.css",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./style.css": "./style.css"
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "pack:check": "npm pack --dry-run"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
