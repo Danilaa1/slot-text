@@ -166,13 +166,30 @@ export function animateSlotText(container, toText, options = {}) {
             newFace.style.color = tint;
         slot.appendChild(newFace);
         void slot.offsetWidth; // commit start transforms
-        // Glide the cell to its new width while the glyphs roll. A clean ease-out
-        // (no overshoot) so the cell never pinches narrower than either glyph.
+        // Glide the cell to its new width with a clean ease-out (no overshoot) so
+        // it never pinches narrower than either glyph. Timing depends on the kind
+        // of change:
+        //  - glyph → glyph: resize alongside the roll.
+        //  - glyph → empty: let the glyph roll out vertically at full width FIRST,
+        //    then snap the empty cell closed quickly — so the exit reads as a roll,
+        //    not a horizontal crush.
+        //  - empty → glyph: open the cell quickly BEFORE the glyph rolls in, so it
+        //    arrives into a full-width cell.
         if (widthChanges) {
+            let wDelay = base;
+            let wDur = d;
+            if (toChar === "") {
+                wDelay = base + Math.round(d * 0.6);
+                wDur = Math.max(140, Math.round(d * 0.45));
+            }
+            else if (fromChar === "") {
+                wDur = Math.max(140, Math.round(d * 0.45));
+            }
             timers.push(window.setTimeout(() => {
-                slot.style.transition = `width ${d}ms cubic-bezier(0.2, 0, 0, 1)`;
+                slot.style.transition = `width ${wDur}ms cubic-bezier(0.2, 0, 0, 1)`;
                 slot.style.width = `${newW}px`;
-            }, base));
+            }, wDelay));
+            maxEnd = Math.max(maxEnd, wDelay + wDur);
         }
         maxEnd = Math.max(maxEnd, base + exitOffset + d + (color ? colorFade : 0));
         // Outgoing glyph slides away first (with its own little counter-tilt).
