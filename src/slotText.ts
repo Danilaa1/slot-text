@@ -231,6 +231,11 @@ export function animateSlotText(
     const widthChanges = Math.abs(newW - oldW) > 0.5;
     if (widthChanges) slot.style.width = `${oldW}px`;
 
+    // A cell growing from or collapsing to empty changes width drastically —
+    // clip it horizontally while it resizes so its glyph wipes in/out with the
+    // cell instead of spilling over and stacking onto the neighbours.
+    if (fromChar === "" || toChar === "") slot.classList.add("is-resizing");
+
     const tint = typeof color === "function" ? color(i, maxLen) : color;
 
     // Per-letter personality: vary the speed, the stagger and a starting tilt
@@ -288,6 +293,7 @@ export function animateSlotText(
           // Hand sizing back to the sizer (same px, so nothing visibly moves).
           slot.style.removeProperty("transition");
           slot.style.removeProperty("width");
+          slot.classList.remove("is-resizing");
           slot.querySelectorAll(".char-face").forEach((f) => {
             if (f !== newFace) f.remove();
           });

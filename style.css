@@ -17,6 +17,13 @@
   vertical-align: bottom;
 }
 
+/* Cells appearing from or collapsing to empty change width drastically, so
+   clip them on both axes while they resize — otherwise their glyphs spill
+   out of the shrinking cell and stack up over the neighbours. */
+.char-slot.is-resizing {
+  overflow-x: clip;
+}
+
 .char-sizer {
   visibility: hidden;
   white-space: pre;
