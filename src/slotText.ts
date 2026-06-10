@@ -242,7 +242,15 @@ export function animateSlotText(
     // that springs back to upright as the glyph settles. Tilt is kept small so
     // rotated corners never swing into the neighbouring cells.
     const d = Math.round(duration * (1 + bounce * 0.45 * wobble(i, 1)));
-    const base = Math.round(i * stagger * (1 + bounce * 0.25 * wobble(i, 2)));
+    // Cells past the end of the incoming text would otherwise queue up on the
+    // full per-index stagger and trickle away one by one, long after the new
+    // word has landed. Compress their stagger so the leftover tail sweeps off
+    // in one quick cascade right behind the last real letter.
+    const staggerIndex =
+      toChar === "" ? toText.length + (i - toText.length) * 0.25 : i;
+    const base = Math.round(
+      staggerIndex * stagger * (1 + bounce * 0.25 * wobble(i, 2)),
+    );
     const tilt = (bounce * 5 * wobble(i, 3)).toFixed(2);
 
     const rollTrans = `transform ${d}ms ${easing}`;
