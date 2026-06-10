@@ -6,6 +6,11 @@
 .char-slot {
   position: relative;
   display: inline-flex;
+  /* Cells must never flex-shrink. When a cell's overflow stops being visible
+     (e.g. .is-resizing), its automatic minimum size drops to 0, and a
+     width-constrained line would crush those cells into overlapping slivers
+     instead of letting the row overflow like it does at rest. */
+  flex: none;
   justify-content: center;
   /* Clip only vertically: the roll needs a top/bottom mask, but glyph side
      bearings, kerning overhang and the settle tilt must stay visible so
