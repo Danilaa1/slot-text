@@ -179,8 +179,11 @@ export function animateSlotText(container, toText, options = {}) {
             let wDelay = base;
             let wDur = d;
             if (toChar === "") {
-                wDelay = base + Math.round(d * 0.6);
-                wDur = Math.max(140, Math.round(d * 0.45));
+                // Start closing once the glyph is ~30% out and finish exactly as it
+                // leaves: late enough to read as a roll, early enough that no wide
+                // empty cell lingers behind the landed text.
+                wDelay = base + Math.round(d * 0.3);
+                wDur = Math.max(140, Math.round(d * 0.7));
             }
             else if (fromChar === "") {
                 wDur = Math.max(140, Math.round(d * 0.45));
