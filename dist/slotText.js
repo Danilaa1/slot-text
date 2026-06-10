@@ -149,12 +149,14 @@ export function animateSlotText(container, toText, options = {}) {
         // Per-letter personality: vary the speed, the stagger and a starting tilt
         // that springs back to upright as the glyph settles. Tilt is kept small so
         // rotated corners never swing into the neighbouring cells.
-        const d = Math.round(duration * (1 + bounce * 0.45 * wobble(i, 1)));
-        // Cells past the end of the incoming text would otherwise queue up on the
-        // full per-index stagger and trickle away one by one, long after the new
-        // word has landed. Compress their stagger so the leftover tail sweeps off
-        // in one quick cascade right behind the last real letter.
-        const staggerIndex = toChar === "" ? toText.length + (i - toText.length) * 0.25 : i;
+        // Tail cells (rolling out to nothing) join the same wave instead of
+        // queuing behind it: they start mid-wave, roll a little faster, and are
+        // gone before the new word finishes landing — so nothing trails.
+        const isTail = toChar === "";
+        const d = Math.round(duration * (isTail ? 0.75 : 1) * (1 + bounce * 0.45 * wobble(i, 1)));
+        const staggerIndex = isTail
+            ? toText.length * 0.5 + (i - toText.length) * 0.25
+            : i;
         const base = Math.round(staggerIndex * stagger * (1 + bounce * 0.25 * wobble(i, 2)));
         const tilt = (bounce * 5 * wobble(i, 3)).toFixed(2);
         const rollTrans = `transform ${d}ms ${easing}`;
@@ -178,12 +180,12 @@ export function animateSlotText(container, toText, options = {}) {
         if (widthChanges) {
             let wDelay = base;
             let wDur = d;
-            if (toChar === "") {
-                // Start closing once the glyph is ~30% out and finish exactly as it
-                // leaves: late enough to read as a roll, early enough that no wide
-                // empty cell lingers behind the landed text.
-                wDelay = base + Math.round(d * 0.3);
-                wDur = Math.max(140, Math.round(d * 0.7));
+            if (isTail) {
+                // Keep full width while the glyph is visibly rolling (first ~55%),
+                // then close just behind it — the exit reads as a roll, and the line
+                // has fully contracted by the time the new word lands.
+                wDelay = base + Math.round(d * 0.55);
+                wDur = Math.max(140, Math.round(d * 0.6));
             }
             else if (fromChar === "") {
                 wDur = Math.max(140, Math.round(d * 0.45));
