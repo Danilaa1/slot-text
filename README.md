@@ -147,6 +147,35 @@ Defaults are tuned for a soft, springy roll:
 </script>
 ```
 
+## Font support
+
+Each character animates inside its own measured cell, sized with the exact
+font you give the element — so widths are always correct.
+
+Works great with:
+
+- **Monospace fonts** — perfect fit, every cell is identical.
+- **Proportional Latin / Cyrillic / Greek fonts** (Geist, Inter, SF, …) —
+  including italics and glyphs with overhang.
+
+Known tradeoffs (inherent to any per-character slot animation):
+
+- **Kerning is lost.** Each glyph is its own box, so pairs like `AV` or `To`
+  sit slightly looser than in plain text. Invisible at UI label sizes,
+  noticeable at large display sizes with kerning-heavy fonts.
+- **Ligatures won't form** — `fi`, `fl`, or coding ligatures stay separate.
+- **Joined scripts are unsupported.** Arabic, Devanagari and other shaping
+  scripts need contextual letterforms across the string and will render as
+  isolated forms.
+- **Complex emoji split.** Single emoji are fine (surrogate pairs are
+  handled), but ZWJ sequences (👨‍👩‍👧) and combining marks break into
+  multiple cells.
+- **Very tall display/script fonts** may clip at the vertical roll mask,
+  which is sized to `line-height: 1.3`.
+
+In short: ideal for short Latin labels, numbers, statuses and commands — in
+essentially any font you'd use for those.
+
 ## Notes
 
 - Browser-only DOM utility.
