@@ -172,14 +172,16 @@ export function animateSlotText(
   // so the text still rolls instead of swapping in place.
   const sample = slots.find((s) => (s.dataset.char ?? "") !== "") ?? slots[0];
   const cs = getComputedStyle(container);
+  // Ceil, not round: if the slide distance is even half a pixel short of the
+  // cell height, a sliver of the outgoing glyph stays visible at the clip edge.
   const H =
-    Math.round(
+    Math.ceil(
       sample?.getBoundingClientRect().height ||
         sample?.offsetHeight ||
         container.getBoundingClientRect().height ||
         parseFloat(cs.lineHeight) ||
         0,
-    ) || Math.round(parseFloat(cs.fontSize) * 1.3) || 18;
+    ) || Math.ceil(parseFloat(cs.fontSize) * 1.3) || 18;
 
   // Resting color to settle the chromatic flash back to.
   const restColor = color ? cs.color : "";
@@ -220,15 +222,23 @@ export function animateSlotText(
     const sizer = slot.querySelector<HTMLElement>(".char-sizer")!;
     const oldFace = slot.querySelector<HTMLElement>(".char-face");
 
-    sizer.textContent = glyph(toChar); // resize the cell to the new glyph
+    // Resize the cell to the new glyph — but ease the width instead of
+    // snapping it, so a wide outgoing glyph (W → i) is never cropped by a
+    // suddenly-narrow cell and neighbouring letters glide rather than jump.
+    const oldW = slot.getBoundingClientRect().width;
+    sizer.textContent = glyph(toChar);
+    const newW = sizer.getBoundingClientRect().width;
+    const widthChanges = Math.abs(newW - oldW) > 0.5;
+    if (widthChanges) slot.style.width = `${oldW}px`;
 
     const tint = typeof color === "function" ? color(i, maxLen) : color;
 
     // Per-letter personality: vary the speed, the stagger and a starting tilt
-    // that springs back to upright as the glyph settles.
+    // that springs back to upright as the glyph settles. Tilt is kept small so
+    // rotated corners never swing into the neighbouring cells.
     const d = Math.round(duration * (1 + bounce * 0.45 * wobble(i, 1)));
     const base = Math.round(i * stagger * (1 + bounce * 0.25 * wobble(i, 2)));
-    const tilt = (bounce * 9 * wobble(i, 3)).toFixed(2);
+    const tilt = (bounce * 5 * wobble(i, 3)).toFixed(2);
 
     const rollTrans = `transform ${d}ms ${easing}`;
     const trans = color ? `${rollTrans}, color ${colorFade}ms linear ${d}ms` : rollTrans;
@@ -240,6 +250,17 @@ export function animateSlotText(
     slot.appendChild(newFace);
 
     void slot.offsetWidth; // commit start transforms
+
+    // Glide the cell to its new width while the glyphs roll. A clean ease-out
+    // (no overshoot) so the cell never pinches narrower than either glyph.
+    if (widthChanges) {
+      timers.push(
+        window.setTimeout(() => {
+          slot.style.transition = `width ${d}ms cubic-bezier(0.2, 0, 0, 1)`;
+          slot.style.width = `${newW}px`;
+        }, base),
+      );
+    }
 
     maxEnd = Math.max(maxEnd, base + exitOffset + d + (color ? colorFade : 0));
 
@@ -264,6 +285,9 @@ export function animateSlotText(
           if (e.propertyName !== "transform") return; // ignore the colour fade
           newFace.removeEventListener("transitionend", done);
           slot.dataset.char = toChar;
+          // Hand sizing back to the sizer (same px, so nothing visibly moves).
+          slot.style.removeProperty("transition");
+          slot.style.removeProperty("width");
           slot.querySelectorAll(".char-face").forEach((f) => {
             if (f !== newFace) f.remove();
           });

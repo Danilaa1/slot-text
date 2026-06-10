@@ -7,7 +7,12 @@
   position: relative;
   display: inline-flex;
   justify-content: center;
+  /* Clip only vertically: the roll needs a top/bottom mask, but glyph side
+     bearings, kerning overhang and the settle tilt must stay visible so
+     letters never look cropped. (overflow: hidden is the legacy fallback.) */
   overflow: hidden;
+  overflow-x: visible;
+  overflow-y: clip;
   line-height: 1.3;
   vertical-align: bottom;
 }
