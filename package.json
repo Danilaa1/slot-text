@@ -1,6 +1,6 @@
 {
   "name": "slot-text",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Dependency-free text roll animation for tiny, tactile UI labels.",
   "type": "module",
   "license": "MIT",
