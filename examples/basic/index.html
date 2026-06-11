@@ -37,15 +37,18 @@
       const label = slotText(document.querySelector("#copy-label"), "Copy");
 
       button.addEventListener("click", () => {
-        label.set("Copied", {
-          direction: "up",
-          skipUnchanged: false,
-          color: chromatic({ from: 190 }),
+        label.flash("Copied", {
+          enter: {
+            direction: "up",
+            skipUnchanged: false,
+            color: chromatic({ from: 190 }),
+          },
+          exit: {
+            direction: "down",
+            skipUnchanged: false,
+            color: chromatic({ from: 190 }),
+          },
         });
-
-        window.setTimeout(() => {
-          label.set("Copy", { direction: "down", skipUnchanged: false });
-        }, 1400);
       });
     </script>
   </body>

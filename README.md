@@ -76,7 +76,21 @@ const label = slotText(element, "Copy", options);
 
 label.set("Copied");
 label.set("Copy", { direction: "down" });
+label.flash("Copied"); // rolls in, then auto-reverts to "Copy"
 label.destroy();
+```
+
+`flash(text, options)` shows temporary text and rolls back automatically —
+the classic Copy → Copied → Copy button in one call. It is spam-safe: repeat
+flashes restart the revert timer instead of queuing extra rolls, and an
+explicit `set()` cancels any pending revert.
+
+```ts
+label.flash("Copied", {
+  revertAfter: 1400, // ms before rolling back (default 1400)
+  enter: { direction: "up", color: chromatic() }, // roll-in options
+  exit: { direction: "down" }, // roll-back options
+});
 ```
 
 Framework components:
@@ -109,8 +123,14 @@ type SlotOptions = {
   color?: string | ((index: number, total: number) => string);
   colorFade?: number;
   skipUnchanged?: boolean;
+  interrupt?: boolean;
 };
 ```
+
+`interrupt: true` (default) cuts off any roll still in flight and starts
+fresh. `interrupt: false` lets the current roll finish: the latest call made
+mid-roll plays once it lands, and calls targeting the text already displayed
+are dropped — ideal for spam-prone triggers like buttons.
 
 Defaults are tuned for a soft, springy roll:
 
@@ -124,6 +144,7 @@ Defaults are tuned for a soft, springy roll:
   bounce: 0.6,
   colorFade: 280,
   skipUnchanged: true,
+  interrupt: true,
 }
 ```
 
@@ -136,13 +157,15 @@ Defaults are tuned for a soft, springy roll:
 
 <script type="module">
   import "slot-text/style.css";
-  import { slotText } from "slot-text";
+  import { slotText, chromatic } from "slot-text";
 
   const label = slotText(document.querySelector("#copy-label"), "Copy");
 
   document.querySelector("button").addEventListener("click", () => {
-    label.set("Copied", { direction: "up", skipUnchanged: false });
-    window.setTimeout(() => label.set("Copy"), 1400);
+    label.flash("Copied", {
+      enter: { direction: "up", skipUnchanged: false, color: chromatic() },
+      exit: { direction: "down", skipUnchanged: false },
+    });
   });
 </script>
 ```
