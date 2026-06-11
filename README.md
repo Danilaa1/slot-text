@@ -11,8 +11,6 @@
 
 Dependency-free text roll animation for tiny, tactile UI labels.
 
-![slot-text usage card](./assets/usage.svg)
-
 ## 📦 Install
 
 ```bash
