@@ -1,5 +1,5 @@
 import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch, } from "vue";
-import { animateSlotText, buildSlotText, clearSlotText, } from "./slotText";
+import { animateSlotText, buildSlotText, clearSlotText, } from "./slotText.js";
 export const SlotText = defineComponent({
     name: "SlotText",
     inheritAttrs: false,

@@ -5,14 +5,14 @@ export {
   clearSlotText,
   type ChromaticOptions,
   type SlotOptions,
-} from "./slotText";
+} from "./slotText.js";
 
 import {
   animateSlotText,
   buildSlotText,
   clearSlotText,
   type SlotOptions,
-} from "./slotText";
+} from "./slotText.js";
 
 export interface SlotTextController {
   readonly element: HTMLElement;

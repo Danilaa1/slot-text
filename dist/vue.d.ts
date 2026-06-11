@@ -1,5 +1,5 @@
 import { type PropType } from "vue";
-import { type SlotOptions } from "./slotText";
+import { type SlotOptions } from "./slotText.js";
 export declare const SlotText: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
     text: {
         type: StringConstructor;

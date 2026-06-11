@@ -1,5 +1,5 @@
 import { createElement, forwardRef, useEffect, useImperativeHandle, useRef, } from "react";
-import { animateSlotText, buildSlotText, clearSlotText, } from "./slotText";
+import { animateSlotText, buildSlotText, clearSlotText, } from "./slotText.js";
 export const SlotText = forwardRef(({ text, options, "aria-label": ariaLabel, ...props }, forwardedRef) => {
     const elementRef = useRef(null);
     const mountedRef = useRef(false);

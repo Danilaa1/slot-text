@@ -1,5 +1,5 @@
-export { animateSlotText, buildSlotText, chromatic, clearSlotText, } from "./slotText";
-import { animateSlotText, buildSlotText, clearSlotText, } from "./slotText";
+export { animateSlotText, buildSlotText, chromatic, clearSlotText, } from "./slotText.js";
+import { animateSlotText, buildSlotText, clearSlotText, } from "./slotText.js";
 /**
  * Create a text-roll controller for one element.
  *

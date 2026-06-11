@@ -11,7 +11,7 @@ import {
   buildSlotText,
   clearSlotText,
   type SlotOptions,
-} from "./slotText";
+} from "./slotText.js";
 
 export interface SlotTextProps
   extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {

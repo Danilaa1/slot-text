@@ -12,7 +12,7 @@ import {
   buildSlotText,
   clearSlotText,
   type SlotOptions,
-} from "./slotText";
+} from "./slotText.js";
 
 export const SlotText = defineComponent({
   name: "SlotText",

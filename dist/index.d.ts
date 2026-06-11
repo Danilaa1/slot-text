@@ -1,5 +1,5 @@
-export { animateSlotText, buildSlotText, chromatic, clearSlotText, type ChromaticOptions, type SlotOptions, } from "./slotText";
-import { type SlotOptions } from "./slotText";
+export { animateSlotText, buildSlotText, chromatic, clearSlotText, type ChromaticOptions, type SlotOptions, } from "./slotText.js";
+import { type SlotOptions } from "./slotText.js";
 export interface SlotTextController {
     readonly element: HTMLElement;
     readonly value: string;
