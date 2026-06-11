@@ -4,3 +4,4 @@ node_modules
 
 # promo assets (Remotion project), not part of the library
 promo/
+dist/
