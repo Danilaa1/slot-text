@@ -44,6 +44,13 @@ export interface SlotOptions {
      * uniformly instead of leaving stray letters frozen.
      */
     skipUnchanged?: boolean;
+    /**
+     * true (default): a new call interrupts any roll in flight, snapping it to
+     * its target before starting fresh. false: the current roll finishes and the
+     * latest call made mid-roll plays after it lands; calls targeting the text
+     * already displayed are dropped. Ideal for spam-prone triggers like buttons.
+     */
+    interrupt?: boolean;
 }
 export interface ChromaticOptions {
     from?: number;

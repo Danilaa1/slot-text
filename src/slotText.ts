@@ -45,6 +45,13 @@ export interface SlotOptions {
    * uniformly instead of leaving stray letters frozen.
    */
   skipUnchanged?: boolean;
+  /**
+   * true (default): a new call interrupts any roll in flight, snapping it to
+   * its target before starting fresh. false: the current roll finishes and the
+   * latest call made mid-roll plays after it lands; calls targeting the text
+   * already displayed are dropped. Ideal for spam-prone triggers like buttons.
+   */
+  interrupt?: boolean;
 }
 
 export interface ChromaticOptions {
@@ -63,6 +70,7 @@ const DEFAULTS = {
   bounce: 0.6,
   colorFade: 280,
   skipUnchanged: true,
+  interrupt: true,
 };
 
 const NBSP = "\u00A0";
@@ -91,6 +99,7 @@ export function chromatic({
 interface SlotState {
   timers: number[];
   target: string;
+  pending?: { text: string; options: SlotOptions };
 }
 const states = new WeakMap<HTMLElement, SlotState>();
 
@@ -147,10 +156,22 @@ export function animateSlotText(
     color,
     colorFade,
     skipUnchanged,
+    interrupt,
   } = {
     ...DEFAULTS,
     ...options,
   };
+
+  // Non-interrupting mode: if a roll is already in flight, let it finish and
+  // remember this request instead. Only the latest request survives, so spam
+  // taps coalesce into a single follow-up roll once the current one lands.
+  const running = states.get(container);
+  if (running && !interrupt) {
+    if (toText !== running.target) {
+      running.pending = { text: toText, options };
+    }
+    return;
+  }
 
   // Interrupt: if a previous roll is still running, fast-forward it to its
   // target and tear down its timers before we start fresh. This is what kills
@@ -163,8 +184,13 @@ export function animateSlotText(
     return;
   }
 
-  const slots = Array.from(container.querySelectorAll<HTMLElement>(".char-slot"));
+  const slots = Array.from(
+    container.querySelectorAll<HTMLElement>(".char-slot"),
+  );
   const fromText = slots.map((s) => s.dataset.char ?? "").join("");
+  // Non-interrupting mode also drops rolls to the text already on screen, so
+  // repeated triggers do not visibly re-roll an unchanged label.
+  if (!interrupt && fromText === toText) return;
   const maxLen = Math.max(fromText.length, toText.length);
 
   // Whole-pixel slide distance = one cell height, so glyphs clip cleanly.
@@ -181,7 +207,9 @@ export function animateSlotText(
         container.getBoundingClientRect().height ||
         parseFloat(cs.lineHeight) ||
         0,
-    ) || Math.ceil(parseFloat(cs.fontSize) * 1.3) || 18;
+    ) ||
+    Math.ceil(parseFloat(cs.fontSize) * 1.3) ||
+    18;
 
   // Resting color to settle the chromatic flash back to.
   const restColor = color ? cs.color : "";
@@ -257,7 +285,9 @@ export function animateSlotText(
     const tilt = (bounce * 5 * wobble(i, 3)).toFixed(2);
 
     const rollTrans = `transform ${d}ms ${easing}`;
-    const trans = color ? `${rollTrans}, color ${colorFade}ms linear ${d}ms` : rollTrans;
+    const trans = color
+      ? `${rollTrans}, color ${colorFade}ms linear ${d}ms`
+      : rollTrans;
 
     const newFace = makeFace(toChar);
     newFace.style.transformOrigin = "50% 50%";
@@ -334,11 +364,17 @@ export function animateSlotText(
   }
 
   // Safety net: snap to a pristine DOM once the slowest letter has settled.
+  // If a non-interrupting call was deferred mid-roll, replay it now — it runs
+  // as a fresh roll from this clean baseline.
   const total = maxEnd + 80;
   timers.push(
     window.setTimeout(() => {
+      const pending = state.pending;
       states.delete(container);
       buildSlotText(container, toText);
+      if (pending) {
+        animateSlotText(container, pending.text, pending.options);
+      }
     }, total),
   );
 }

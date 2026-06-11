@@ -20,6 +20,7 @@ const DEFAULTS = {
     bounce: 0.6,
     colorFade: 280,
     skipUnchanged: true,
+    interrupt: true,
 };
 const NBSP = "\u00A0";
 const glyph = (char) => (char === " " ? NBSP : char);
@@ -71,10 +72,20 @@ export function buildSlotText(container, text) {
     container.replaceChildren(...Array.from(text, buildSlot));
 }
 export function animateSlotText(container, toText, options = {}) {
-    const { direction, stagger, duration, exitOffset, easing, bounce, color, colorFade, skipUnchanged, } = {
+    const { direction, stagger, duration, exitOffset, easing, bounce, color, colorFade, skipUnchanged, interrupt, } = {
         ...DEFAULTS,
         ...options,
     };
+    // Non-interrupting mode: if a roll is already in flight, let it finish and
+    // remember this request instead. Only the latest request survives, so spam
+    // taps coalesce into a single follow-up roll once the current one lands.
+    const running = states.get(container);
+    if (running && !interrupt) {
+        if (toText !== running.target) {
+            running.pending = { text: toText, options };
+        }
+        return;
+    }
     // Interrupt: if a previous roll is still running, fast-forward it to its
     // target and tear down its timers before we start fresh. This is what kills
     // the "switch bun→npm mid-animation" glitch.
@@ -86,6 +97,10 @@ export function animateSlotText(container, toText, options = {}) {
     }
     const slots = Array.from(container.querySelectorAll(".char-slot"));
     const fromText = slots.map((s) => s.dataset.char ?? "").join("");
+    // Non-interrupting mode also drops rolls to the text already on screen, so
+    // repeated triggers do not visibly re-roll an unchanged label.
+    if (!interrupt && fromText === toText)
+        return;
     const maxLen = Math.max(fromText.length, toText.length);
     // Whole-pixel slide distance = one cell height, so glyphs clip cleanly.
     // If layout has not produced dimensions yet, fall back to line-height/font-size
@@ -98,7 +113,9 @@ export function animateSlotText(container, toText, options = {}) {
         sample?.offsetHeight ||
         container.getBoundingClientRect().height ||
         parseFloat(cs.lineHeight) ||
-        0) || Math.ceil(parseFloat(cs.fontSize) * 1.3) || 18;
+        0) ||
+        Math.ceil(parseFloat(cs.fontSize) * 1.3) ||
+        18;
     // Resting color to settle the chromatic flash back to.
     const restColor = color ? cs.color : "";
     // Pre-create any extra cells up front so the row never reflows mid-roll.
@@ -160,7 +177,9 @@ export function animateSlotText(container, toText, options = {}) {
         const base = Math.round(staggerIndex * stagger * (1 + bounce * 0.25 * wobble(i, 2)));
         const tilt = (bounce * 5 * wobble(i, 3)).toFixed(2);
         const rollTrans = `transform ${d}ms ${easing}`;
-        const trans = color ? `${rollTrans}, color ${colorFade}ms linear ${d}ms` : rollTrans;
+        const trans = color
+            ? `${rollTrans}, color ${colorFade}ms linear ${d}ms`
+            : rollTrans;
         const newFace = makeFace(toChar);
         newFace.style.transformOrigin = "50% 50%";
         newFace.style.transform = `translateY(${inStart}px) rotate(${tilt}deg)`;
@@ -228,10 +247,16 @@ export function animateSlotText(container, toText, options = {}) {
         }, base + exitOffset));
     }
     // Safety net: snap to a pristine DOM once the slowest letter has settled.
+    // If a non-interrupting call was deferred mid-roll, replay it now — it runs
+    // as a fresh roll from this clean baseline.
     const total = maxEnd + 80;
     timers.push(window.setTimeout(() => {
+        const pending = state.pending;
         states.delete(container);
         buildSlotText(container, toText);
+        if (pending) {
+            animateSlotText(container, pending.text, pending.options);
+        }
     }, total));
 }
 export function clearSlotText(container, text = "") {
