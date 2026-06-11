@@ -1,3 +1,6 @@
 node_modules
 *.tgz
 .DS_Store
+
+# promo assets (Remotion project), not part of the library
+promo/
