@@ -45,6 +45,7 @@
     }
   },
   "scripts": {
+    "prepublishOnly": "npm run build",
     "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.json --noEmit",
     "pack:check": "npm pack --dry-run"
