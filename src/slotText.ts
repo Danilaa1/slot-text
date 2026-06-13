@@ -141,6 +141,22 @@ export function buildSlotText(container: HTMLElement, text: string) {
   container.replaceChildren(...Array.from(text, buildSlot));
 }
 
+function isSlotLayoutReady(slot: HTMLElement) {
+  const face = slot.querySelector<HTMLElement>(".char-face");
+  if (face === null) return false;
+
+  const slotStyle = getComputedStyle(slot);
+  const faceStyle = getComputedStyle(face);
+  const slotIsFlex =
+    slotStyle.display === "inline-flex" || slotStyle.display === "flex";
+
+  return (
+    slotStyle.position === "relative" &&
+    slotIsFlex &&
+    faceStyle.position === "absolute"
+  );
+}
+
 export function animateSlotText(
   container: HTMLElement,
   toText: string,
@@ -187,6 +203,11 @@ export function animateSlotText(
   const slots = Array.from(
     container.querySelectorAll<HTMLElement>(".char-slot"),
   );
+  if (!isSlotLayoutReady(slots[0])) {
+    buildSlotText(container, toText);
+    return;
+  }
+
   const fromText = slots.map((s) => s.dataset.char ?? "").join("");
   // Non-interrupting mode also drops rolls to the text already on screen, so
   // repeated triggers do not visibly re-roll an unchanged label.
