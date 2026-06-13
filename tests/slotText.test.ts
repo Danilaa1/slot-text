@@ -39,3 +39,116 @@ describe("slotText() initial DOM", () => {
     expect(faces[1].textContent).toBe("\u00A0");
   });
 });
+
+describe("set()", () => {
+  it("rolls to the new text and settles there", () => {
+    const label = slotText(el, "Copy");
+
+    label.set("Copied");
+    vi.runAllTimers();
+
+    expect(label.value).toBe("Copied");
+    expect(readText()).toBe("Copied");
+  });
+
+  it("grows and shrinks the slot count to match the new text", () => {
+    const label = slotText(el, "Hi");
+
+    label.set("Hello");
+    vi.runAllTimers();
+    expect(el.querySelectorAll(".char-slot")).toHaveLength(5);
+    expect(readText()).toBe("Hello");
+
+    label.set("Yo");
+    vi.runAllTimers();
+    expect(el.querySelectorAll(".char-slot")).toHaveLength(2);
+    expect(readText()).toBe("Yo");
+  });
+
+  it("lands on the last value after rapid set() calls", () => {
+    const label = slotText(el, "one");
+
+    label.set("two");
+    label.set("three");
+    label.set("four");
+    vi.runAllTimers();
+
+    expect(label.value).toBe("four");
+    expect(readText()).toBe("four");
+  });
+});
+
+// A revert window far longer than any roll animation, so we can settle the
+// flash roll first and assert its DOM before the auto-revert fires.
+const LONG_REVERT = 100000;
+// Comfortably past the longest roll animation, but short of LONG_REVERT.
+const SETTLE = 5000;
+
+describe("flash()", () => {
+  it("shows the flash text, then reverts to the original", () => {
+    const label = slotText(el, "Copy");
+
+    label.flash("Copied", { revertAfter: LONG_REVERT });
+    expect(label.value).toBe("Copied");
+
+    vi.advanceTimersByTime(SETTLE);
+    expect(readText()).toBe("Copied");
+
+    vi.advanceTimersByTime(LONG_REVERT);
+    vi.runAllTimers();
+    expect(label.value).toBe("Copy");
+    expect(readText()).toBe("Copy");
+  });
+
+  it("reverts to the original after a burst of flashes", () => {
+    const label = slotText(el, "Copy");
+
+    label.flash("Copied", { revertAfter: LONG_REVERT });
+    vi.advanceTimersByTime(400);
+    label.flash("Copied!", { revertAfter: LONG_REVERT });
+    expect(label.value).toBe("Copied!");
+
+    vi.advanceTimersByTime(SETTLE);
+    expect(readText()).toBe("Copied!");
+
+    vi.advanceTimersByTime(LONG_REVERT);
+    vi.runAllTimers();
+    expect(label.value).toBe("Copy");
+    expect(readText()).toBe("Copy");
+  });
+
+  it("is cancelled by an explicit set()", () => {
+    const label = slotText(el, "Copy");
+
+    label.flash("Copied", { revertAfter: 1000 });
+    label.set("Done");
+    vi.runAllTimers();
+
+    expect(label.value).toBe("Done");
+    expect(readText()).toBe("Done");
+  });
+});
+
+describe("destroy()", () => {
+  it("restores plain text and removes slot markup", () => {
+    const label = slotText(el, "Copy");
+
+    label.destroy();
+
+    expect(el.classList.contains("slot-text")).toBe(false);
+    expect(el.querySelectorAll(".char-slot")).toHaveLength(0);
+    expect(el.textContent).toBe("Copy");
+  });
+
+  it("cancels a pending flash revert", () => {
+    const label = slotText(el, "Copy");
+
+    label.flash("Copied", { revertAfter: LONG_REVERT });
+    vi.advanceTimersByTime(SETTLE);
+    label.destroy();
+    vi.runAllTimers();
+
+    expect(el.classList.contains("slot-text")).toBe(false);
+    expect(el.textContent).toBe("Copied");
+  });
+});
