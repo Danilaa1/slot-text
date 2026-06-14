@@ -6,6 +6,8 @@
   <img src="https://img.shields.io/bundlephobia/minzip/slot-text?color=8b5cf6&label=size" alt="bundle size">
   <img src="https://img.shields.io/badge/react-✓-61dafb" alt="react">
   <img src="https://img.shields.io/badge/vue-✓-42b883" alt="vue">
+  <img src="https://img.shields.io/badge/solid-✓-2c4f7c" alt="solid">
+  <img src="https://img.shields.io/badge/svelte-✓-ff3e00" alt="svelte">
   <img src="https://img.shields.io/badge/typescript-✓-3178c6" alt="typescript">
 </p>
 
@@ -85,6 +87,35 @@ import { SlotText } from "slot-text/vue";
 </template>
 ```
 
+## 🔷 Solid
+
+```tsx
+import "slot-text/style.css";
+import { createSignal } from "solid-js";
+import { slotText } from "slot-text/solid";
+
+const [label, setLabel] = createSignal("Copy");
+
+<button aria-label={label()} onClick={() => setLabel("Copied")}>
+  <span use:slotText={{ text: label(), options: { direction: "up" } }} />
+</button>
+```
+
+## 🧡 Svelte
+
+```svelte
+<script lang="ts">
+  import "slot-text/style.css";
+  import { slotText } from "slot-text/svelte";
+
+  let label = "Copy";
+</script>
+
+<button aria-label={label} on:click={() => label = "Copied"}>
+  <span use:slotText={{ text: label, options: { direction: "up" } }}></span>
+</button>
+```
+
 ## ⚙️ Options
 
 | Option | Default | Description |
@@ -132,6 +163,7 @@ essentially any font you'd use for those.
 ## 📝 Notes
 
 - Browser-only DOM utility, zero runtime dependencies.
-- React and Vue are optional peer dependencies — plain JS users don't need them.
+- React, Vue, Solid, and Svelte are optional peer dependencies — plain JS users
+  don't need them.
 - Import the CSS once before using the animation.
 - Low-level helpers also exported: `buildSlotText`, `animateSlotText`, `chromatic`.
