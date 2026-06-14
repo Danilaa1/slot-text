@@ -76,6 +76,47 @@ describe("set()", () => {
     expect(label.value).toBe("four");
     expect(readText()).toBe("four");
   });
+
+  it("keeps the same text when set() receives the current value", () => {
+    const label = slotText(el, "Copy");
+
+    label.set("Copy");
+    vi.runAllTimers();
+
+    expect(label.value).toBe("Copy");
+    expect(el.querySelectorAll(".char-slot")).toHaveLength(4);
+    expect(readText()).toBe("Copy");
+  });
+
+  it("supports empty initial text", () => {
+    const label = slotText(el, "");
+
+    expect(label.value).toBe("");
+    expect(readText()).toBe("");
+    expect(el.querySelectorAll(".char-slot")).toHaveLength(0);
+  });
+
+  it("clears slots when set() receives an empty string", () => {
+    const label = slotText(el, "Copy");
+
+    label.set("");
+    vi.runAllTimers();
+
+    expect(label.value).toBe("");
+    expect(readText()).toBe("");
+    expect(el.querySelectorAll(".char-slot")).toHaveLength(0);
+  });
+
+  it("supports non-basic characters", () => {
+    const label = slotText(el, "Copy!");
+
+    label.set("✓");
+    vi.runAllTimers();
+
+    expect(label.value).toBe("✓");
+    expect(el.querySelectorAll(".char-slot")).toHaveLength(1);
+    expect(readText()).toBe("✓");
+  });
 });
 
 // A revert window far longer than any roll animation, so we can settle the
