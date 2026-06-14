@@ -29,11 +29,21 @@
       "types": "./dist/vue.d.ts",
       "import": "./dist/vue.js"
     },
+    "./solid": {
+      "types": "./dist/solid.d.ts",
+      "import": "./dist/solid.js"
+    },
+    "./svelte": {
+      "types": "./dist/svelte.d.ts",
+      "import": "./dist/svelte.js"
+    },
     "./style.css": "./style.css"
   },
   "types": "./dist/index.d.ts",
   "peerDependencies": {
     "react": ">=18 <20",
+    "solid-js": ">=1.8 <2",
+    "svelte": ">=4 <6",
     "vue": ">=3.4 <4"
   },
   "peerDependenciesMeta": {
@@ -41,6 +51,12 @@
       "optional": true
     },
     "vue": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    },
+    "svelte": {
       "optional": true
     }
   },
@@ -55,6 +71,8 @@
     "@types/react": "^19.2.17",
     "happy-dom": "^20.10.2",
     "react": "^19.2.7",
+    "solid-js": "^1.9.13",
+    "svelte": "^5.56.3",
     "typescript": "^5.8.3",
     "vitest": "^4.1.8",
     "vue": "^3.5.35"
