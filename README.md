@@ -134,4 +134,7 @@ essentially any font you'd use for those.
 - Browser-only DOM utility, zero runtime dependencies.
 - React and Vue are optional peer dependencies — plain JS users don't need them.
 - Import the CSS once before using the animation.
+- If `slot-text/style.css` arrives late, the controller keeps the final text
+  readable and skips that roll instead of briefly exposing duplicated glyph
+  faces. See `examples/css-race`.
 - Low-level helpers also exported: `buildSlotText`, `animateSlotText`, `chromatic`.

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>slot-text CSS race example</title>
+    <style>
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        font: 800 48px/1.1 ui-sans-serif, system-ui, sans-serif;
+        background: #0e1116;
+        color: #edf2f7;
+      }
+
+      .card {
+        display: grid;
+        gap: 18px;
+        width: min(760px, calc(100vw - 48px));
+      }
+
+      p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.45;
+        color: #9ca3af;
+      }
+
+      button {
+        width: max-content;
+        border: 1px solid #2a3342;
+        border-radius: 999px;
+        padding: 14px 22px;
+        background: #f0b400;
+        color: #111827;
+        font: inherit;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <p>
+        This intentionally delays slot-text/style.css, then calls set() before
+        the stylesheet is applied. The label should remain readable instead of
+        briefly rendering duplicated glyph faces.
+      </p>
+      <button type="button"><span id="label">Take the next step</span></button>
+    </main>
+
+    <script type="module">
+      import { slotText } from "../../dist/index.js";
+
+      const label = slotText(
+        document.querySelector("#label"),
+        "Take the next step",
+      );
+
+      label.set("Take the next step", {
+        duration: 420,
+        stagger: 55,
+        skipUnchanged: false,
+      });
+
+      window.setTimeout(() => {
+        const stylesheet = document.createElement("link");
+        stylesheet.rel = "stylesheet";
+        stylesheet.href = "../../style.css";
+        document.head.appendChild(stylesheet);
+      }, 900);
+    </script>
+  </body>
+</html>
