@@ -8,7 +8,7 @@ export interface SlotTextParams {
 
 export function slotText(element: HTMLElement, accessor: Accessor<SlotTextParams>) {
   const initial = accessor();
-  const controller = createSlotText(element, initial.text, initial.options);
+  const controller = createSlotText(element, initial.text);
   let previousText = initial.text;
   let isFirstRun = true;
 

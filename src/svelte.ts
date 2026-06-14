@@ -6,7 +6,7 @@ export interface SlotTextParams {
 }
 
 export function slotText(element: HTMLElement, params: SlotTextParams) {
-  const controller = createSlotText(element, params.text, params.options);
+  const controller = createSlotText(element, params.text);
   let previousText = params.text;
 
   return {

@@ -13,6 +13,7 @@
     "dist",
     "examples",
     "style.css",
+    "style.css.d.ts",
     "README.md",
     "LICENSE"
   ],
@@ -37,7 +38,10 @@
       "types": "./dist/svelte.d.ts",
       "import": "./dist/svelte.js"
     },
-    "./style.css": "./style.css"
+    "./style.css": {
+      "types": "./style.css.d.ts",
+      "default": "./style.css"
+    }
   },
   "types": "./dist/index.d.ts",
   "peerDependencies": {

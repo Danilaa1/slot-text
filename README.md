@@ -96,7 +96,7 @@ import { slotText } from "slot-text/solid";
 
 const [label, setLabel] = createSignal("Copy");
 
-<button onClick={() => setLabel("Copied")}>
+<button aria-label={label()} onClick={() => setLabel("Copied")}>
   <span use:slotText={{ text: label(), options: { direction: "up" } }} />
 </button>
 ```
@@ -111,8 +111,8 @@ const [label, setLabel] = createSignal("Copy");
   let label = "Copy";
 </script>
 
-<button on:click={() => label = "Copied"}>
-  <span use:slotText={{ text: label, options: { direction: "up" } }} />
+<button aria-label={label} on:click={() => label = "Copied"}>
+  <span use:slotText={{ text: label, options: { direction: "up" } }}></span>
 </button>
 ```
 
