@@ -8,12 +8,11 @@
     "skipLibCheck": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "baseUrl": "..",
     "paths": {
-      "slot-text": ["./src/index.ts"],
-      "slot-text/solid": ["./src/solid.ts"],
-      "slot-text/svelte": ["./src/svelte.ts"]
+      "slot-text": ["../src/index.ts"],
+      "slot-text/solid": ["../src/solid.ts"],
+      "slot-text/svelte": ["../src/svelte.ts"]
     }
   },
-  "include": ["env.d.ts", "solid.tsx", "../src"]
+  "include": ["env.d.ts", "solid.tsx", "*.svelte", "../src/**/*.ts"]
 }
