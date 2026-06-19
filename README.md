@@ -15,8 +15,30 @@ Dependency-free text roll animation for tiny, tactile UI labels.
 
 ## 📦 Install
 
+Choose your preferred package manager:
+
+**npm**
+
 ```bash
 npm install slot-text
+```
+
+**pnpm**
+
+```bash
+pnpm add slot-text
+```
+
+**Bun**
+
+```bash
+bun add slot-text
+```
+
+**Yarn**
+
+```bash
+yarn add slot-text
 ```
 
 ## 🚀 Quick start
