@@ -8,8 +8,8 @@ import {
 } from "react";
 import {
   animateSlotText,
-  buildSlotText,
   clearSlotText,
+  renderSlotText,
   type SlotOptions,
 } from "./slotText.js";
 
@@ -36,7 +36,7 @@ export const SlotText = forwardRef<HTMLSpanElement, SlotTextProps>(
       const element = elementRef.current;
       if (!element) return;
 
-      buildSlotText(element, text);
+      renderSlotText(element, text);
       mountedRef.current = true;
 
       return () => {

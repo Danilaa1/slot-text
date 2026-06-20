@@ -75,6 +75,7 @@ const DEFAULTS = {
 
 const NBSP = "\u00A0";
 const glyph = (char: string) => (char === " " ? NBSP : char);
+const CSS_PROBE_TEXT = "x";
 
 /**
  * Build a `color` function that sweeps the hue across the line, giving every
@@ -111,7 +112,7 @@ function settle(container: HTMLElement) {
   states.delete(container);
   // Rebuild a pristine DOM at the text the interrupted roll was heading toward,
   // so the next animation starts from a clean, non-overlapping baseline.
-  buildSlotText(container, state.target);
+  renderSlotText(container, state.target);
 }
 
 function makeFace(char: string) {
@@ -139,6 +140,56 @@ function buildSlot(char: string) {
 export function buildSlotText(container: HTMLElement, text: string) {
   container.classList.add("slot-text");
   container.replaceChildren(...Array.from(text, buildSlot));
+}
+
+function renderPlainText(container: HTMLElement, text: string) {
+  container.classList.remove("slot-text");
+  container.textContent = text;
+}
+
+function isSlotLayoutReady(slot: HTMLElement | null | undefined) {
+  if (!slot) return false;
+
+  const face = slot.querySelector<HTMLElement>(".char-face");
+  if (face === null) return false;
+
+  const slotStyle = getComputedStyle(slot);
+  const faceStyle = getComputedStyle(face);
+  const slotIsFlex =
+    slotStyle.display === "inline-flex" || slotStyle.display === "flex";
+
+  return (
+    slotStyle.position === "relative" &&
+    slotIsFlex &&
+    faceStyle.position === "absolute"
+  );
+}
+
+function canRenderSlotLayout() {
+  if (!document.body) return false;
+
+  const probe = document.createElement("span");
+  probe.setAttribute("aria-hidden", "true");
+  probe.style.cssText =
+    "position:absolute;left:-9999px;top:-9999px;visibility:hidden;pointer-events:none;";
+
+  buildSlotText(probe, CSS_PROBE_TEXT);
+  document.body.appendChild(probe);
+  const ready = isSlotLayoutReady(
+    probe.querySelector<HTMLElement>(".char-slot"),
+  );
+  probe.remove();
+
+  return ready;
+}
+
+export function renderSlotText(container: HTMLElement, text: string) {
+  if (canRenderSlotLayout()) {
+    buildSlotText(container, text);
+    return;
+  }
+
+  renderPlainText(container, text);
 }
 
 export function animateSlotText(
@@ -180,13 +231,24 @@ export function animateSlotText(
 
   // First run / empty container → just build it.
   if (!container.querySelector(".char-slot")) {
-    buildSlotText(container, toText);
-    return;
+    if (!canRenderSlotLayout()) {
+      renderPlainText(container, toText);
+      return;
+    }
+
+    const fromText = container.textContent ?? "";
+    buildSlotText(container, fromText || toText);
+    if (!fromText || fromText === toText) return;
   }
 
   const slots = Array.from(
     container.querySelectorAll<HTMLElement>(".char-slot"),
   );
+  if (!isSlotLayoutReady(slots[0])) {
+    renderPlainText(container, toText);
+    return;
+  }
+
   const fromText = slots.map((s) => s.dataset.char ?? "").join("");
   // Non-interrupting mode also drops rolls to the text already on screen, so
   // repeated triggers do not visibly re-roll an unchanged label.
@@ -371,7 +433,7 @@ export function animateSlotText(
     window.setTimeout(() => {
       const pending = state.pending;
       states.delete(container);
-      buildSlotText(container, toText);
+      renderSlotText(container, toText);
       if (pending) {
         animateSlotText(container, pending.text, pending.options);
       }

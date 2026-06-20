@@ -5,15 +5,35 @@ import { slotText as solidSlotText } from "../src/solid.js";
 import { slotText as svelteSlotText } from "../src/svelte.js";
 
 let el: HTMLElement;
+let style: HTMLStyleElement;
+
+const SLOT_TEXT_CSS = `
+  .slot-text {
+    display: inline-flex;
+  }
+
+  .char-slot {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .char-face {
+    position: absolute;
+  }
+`;
 
 beforeEach(() => {
   vi.useFakeTimers();
+  style = document.createElement("style");
+  style.textContent = SLOT_TEXT_CSS;
+  document.head.appendChild(style);
   el = document.createElement("span");
   document.body.appendChild(el);
 });
 
 afterEach(() => {
   vi.useRealTimers();
+  style.remove();
   el.remove();
 });
 

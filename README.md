@@ -188,4 +188,6 @@ essentially any font you'd use for those.
 - React, Vue, Solid, and Svelte are optional peer dependencies — plain JS users
   don't need them.
 - Import the CSS once before using the animation.
+- If `slot-text/style.css` arrives late, initial and updated labels stay as
+  plain readable text until the slot layout is ready. See `examples/css-race`.
 - Low-level helpers also exported: `buildSlotText`, `animateSlotText`, `chromatic`.

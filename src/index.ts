@@ -9,8 +9,8 @@ export {
 
 import {
   animateSlotText,
-  buildSlotText,
   clearSlotText,
+  renderSlotText,
   type SlotOptions,
 } from "./slotText.js";
 
@@ -55,7 +55,7 @@ export function slotText(
   let value = initialText;
   let revertTimeout: number | undefined;
   let restingText: string | undefined;
-  buildSlotText(element, initialText);
+  renderSlotText(element, initialText);
 
   return {
     element,

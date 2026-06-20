@@ -1,16 +1,37 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { slotText } from "../src/index.js";
+import { animateSlotText, buildSlotText } from "../src/slotText.js";
 
 let el: HTMLElement;
+let style: HTMLStyleElement;
+
+const SLOT_TEXT_CSS = `
+  .slot-text {
+    display: inline-flex;
+  }
+
+  .char-slot {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .char-face {
+    position: absolute;
+  }
+`;
 
 beforeEach(() => {
   vi.useFakeTimers();
+  style = document.createElement("style");
+  style.textContent = SLOT_TEXT_CSS;
+  document.head.appendChild(style);
   el = document.createElement("span");
   document.body.appendChild(el);
 });
 
 afterEach(() => {
   vi.useRealTimers();
+  style.remove();
   el.remove();
 });
 
@@ -37,6 +58,36 @@ describe("slotText() initial DOM", () => {
     slotText(el, "a b");
     const faces = el.querySelectorAll(".char-face");
     expect(faces[1].textContent).toBe("\u00A0");
+  });
+});
+
+describe("missing CSS fallback", () => {
+  beforeEach(() => {
+    style.remove();
+  });
+
+  it("keeps exact plain text on initial render and set()", () => {
+    const label = slotText(el, "Take the next step");
+
+    expect(label.value).toBe("Take the next step");
+    expect(el.textContent).toBe("Take the next step");
+    expect(el.querySelector(".char-slot")).toBeNull();
+
+    label.set("Take the next step", { skipUnchanged: false });
+
+    expect(label.value).toBe("Take the next step");
+    expect(el.textContent).toBe("Take the next step");
+    expect(el.querySelector(".char-slot")).toBeNull();
+  });
+
+  it("replaces unstyled slot markup with plain target text", () => {
+    buildSlotText(el, "Take");
+    expect(el.textContent).toBe("TTaakkee");
+
+    animateSlotText(el, "Take the next step");
+
+    expect(el.textContent).toBe("Take the next step");
+    expect(el.querySelector(".char-slot")).toBeNull();
   });
 });
 
