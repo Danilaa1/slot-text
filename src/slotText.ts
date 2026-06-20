@@ -179,7 +179,10 @@ export function animateSlotText(
   settle(container);
 
   // First run / empty container → just build it.
-  if (!container.querySelector(".char-slot")) {
+  if (toText === "") {
+    clearSlotText(container);
+    return;
+} else if (!container.querySelector(".char-slot")) {
     buildSlotText(container, toText);
     return;
   }
