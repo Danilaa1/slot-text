@@ -7,12 +7,7 @@ export {
   type SlotOptions,
 } from "./slotText.js";
 
-import {
-  animateSlotText,
-  buildSlotText,
-  clearSlotText,
-  type SlotOptions,
-} from "./slotText.js";
+import { animateSlotText, buildSlotText, clearSlotText, type SlotOptions } from "./slotText.js";
 
 export interface FlashOptions {
   /** How long the flash text stays before rolling back, in ms (default 1400). */

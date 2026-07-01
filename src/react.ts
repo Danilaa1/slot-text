@@ -13,8 +13,10 @@ import {
   type SlotOptions,
 } from "./slotText.js";
 
-export interface SlotTextProps
-  extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
+export interface SlotTextProps extends Omit<
+  HTMLAttributes<HTMLSpanElement>,
+  "children"
+> {
   text: string;
   options?: SlotOptions;
 }

@@ -1,6 +1,7 @@
 .slot-text {
   display: inline-flex;
   white-space: pre;
+  align-items: baseline;
 }
 
 .char-slot {
@@ -12,6 +13,7 @@
      instead of letting the row overflow like it does at rest. */
   flex: none;
   justify-content: center;
+  align-items: baseline;
   /* Clip only vertically: the roll needs a top/bottom mask, but glyph side
      bearings, kerning overhang and the settle tilt must stay visible so
      letters never look cropped. (overflow: hidden is the legacy fallback.) */
@@ -19,7 +21,6 @@
   overflow-x: visible;
   overflow-y: clip;
   line-height: 1.3;
-  vertical-align: bottom;
 }
 
 /* Cells appearing from or collapsing to empty change width drastically, so
